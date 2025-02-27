@@ -1,7 +1,4 @@
-FROM alpine:latest
-LABEL maintainer "Steven Iveson <steve@iveson.eu>"
-LABEL source "https://github.com/sjiveson/nfs-server-alpine"
-LABEL branch "master"
+FROM alpine:3.9.3
 COPY Dockerfile README.md /
 
 RUN apk add --no-cache --update --verbose nfs-utils bash iproute2 && \
