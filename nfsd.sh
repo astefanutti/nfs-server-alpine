@@ -107,8 +107,12 @@ while true; do
     # /usr/sbin/rpc.gssd -v
     # /usr/sbin/rpc.statd
 
-    echo "Starting NFS in the background..."
-    /usr/sbin/rpc.nfsd --debug 8 --no-udp --no-nfs-version 3
+    # Increase TCP buffer sizes for large sequential reads (e.g. ML model files)
+    sysctl -w net.core.rmem_max=16777216 2>/dev/null || true
+    sysctl -w net.core.wmem_max=16777216 2>/dev/null || true
+
+    echo "Starting NFS in the background with ${NFSD_THREADS:-8} threads..."
+    /usr/sbin/rpc.nfsd --no-udp --no-nfs-version 3 ${NFSD_THREADS:-8}
     echo "Exporting File System..."
     if /usr/sbin/exportfs -rv; then
       /usr/sbin/exportfs
